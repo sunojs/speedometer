@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="author" content="yanni4night@gmail.com"/>
+        <title>SpeedoMeter Test</title>
+        <script src="speedometer.js"></script>
+        <style>
+
+            .dial{
+                width: 400px;
+                height: 400px;
+                margin: 0 auto;
+                border: 3px solid #ccc;
+                border-radius: 999em;
+                position: relative;
+            }
+            .dial .pointer{
+                transform: rotate(-150deg);
+                position: absolute;
+                transform-origin: 0 50%;
+                height: 10px;
+                width: 180px;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+                background: #ccc;
+                left: 50%;
+                top: 50%;
+                margin-top: -5px;
+                z-index: 10;
+                transition: all .5s;
+            }
+            .dial .position{
+                font: bold 25px/1.5 "Courier New",arial,sans-serif;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                color: #212121;
+                padding: 10px;
+                position: relative;
+                display: block;
+                text-align: center;
+                width: 50%;
+                margin: 250px auto 0;
+                opacity: .75;
+            }
+        </style>
+    </head>
+    <body>
+   
+        <div class="dial">
+            <div class="pointer"></div>
+            <ouput class="position">0</ouput>
+        </div>
+        <script type="text/javascript">
+
+        var dom_position = document.querySelector('.position');
+        var dom_pointer = document.querySelector('.dial .pointer');
+
+        var sm = new SpeedoMeter();
+        sm.addListener({
+            onReport:function(pos, speed){
+                //speed&&console.log(speed);
+                dom_position.innerHTML = speed + 'km/h';
+                var rotate = Math.min((speed / 200) * 360,360) - 150;
+                dom_pointer.style.transform = 'rotate('+rotate+'deg)';
+            }
+        });
+
+        sm.start();
+
+        var pushes = [2e5,-1e5,1e5,3e5,-2e5,0.6e5,1.9e5,-0.9e5];
+
+        var clock = setInterval(function(){
+            var push = pushes.shift();
+            sm.push(push);
+            if(!pushes.length){
+                clearInterval(clock);
+            }
+        },2e3)
+
+        </script>
+    </body>
+</html>
